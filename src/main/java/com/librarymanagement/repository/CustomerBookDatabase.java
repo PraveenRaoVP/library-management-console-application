@@ -1,6 +1,11 @@
 package com.librarymanagement.repository;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,5 +96,33 @@ public class CustomerBookDatabase {
     public void removeCustomerBooks(int customerId) {
         customerIdToLibraryIdtoBookId.remove(customerId);
         customerIdToIssueDateToFine.remove(customerId);
+    }
+
+    public void pushDataToJSON() {
+        ObjectMapper mapper = new ObjectMapper();
+        File file1 = new File("./src/main/resources/customerToIssueDateToFine.json");
+        File file2 = new File("./src/main/resources/customerToLibraryIdToBookId.json");
+        try{
+            mapper.writeValue(file1, customerIdToIssueDateToFine);
+            mapper.writeValue(file2, customerIdToLibraryIdtoBookId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pullDataFromJSON() {
+        ObjectMapper mapper = new ObjectMapper();
+        File file1 = new File("src/main/resources/customerToIssueDateToFine.json");
+        File file2 = new File("src/main/resources/customerToLibraryIdToBookId.json");
+        try {
+            customerIdToIssueDateToFine.clear();
+            customerIdToIssueDateToFine.putAll(mapper.readValue(file1, new TypeReference<Map<Integer, Map<String, Double>>>() {
+            }));
+            customerIdToLibraryIdtoBookId.clear();
+            customerIdToLibraryIdtoBookId.putAll(mapper.readValue(file2, new TypeReference<Map<Integer, Map<Integer, Integer>>>() {
+            }));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -8,8 +8,6 @@ import com.librarymanagement.repository.CustomerBookDatabase;
 import com.librarymanagement.repository.CustomerDatabase;
 import com.librarymanagement.repository.LibraryBookDatabase;
 
-import java.util.List;
-
 class CustomerManagerModel {
     private final CustomerManagerView customerManagerView;
 
@@ -21,6 +19,10 @@ class CustomerManagerModel {
         int customerId = CustomerDatabase.getInstance().getCustomers().size() + 1;
         Customer customer = new Customer(customerId, customerName, customerAddress, customerEmailId, customerPhoneNo);
         CustomerDatabase.getInstance().addCustomer(customer);
+        if(BooksDatabase.getInstance().getBookById(bookId).getAvailableCount() == 0) {
+            System.out.println("Book not available!");
+            return;
+        }
         CustomerBookDatabase.getInstance().addCustomerBook(customerId, libraryId, bookId);
         BooksDatabase.getInstance().getBookById(bookId).setAvailableCount(BooksDatabase.getInstance().getBookById(bookId).getAvailableCount() - 1);
         LibraryBookDatabase.getInstance().updateBookCount(libraryId, bookId, LibraryBookDatabase.getInstance().getBookCount(libraryId, bookId) - 1);
@@ -49,8 +51,12 @@ class CustomerManagerModel {
     }
 
     public void viewIssuedBooks(int customerId) {
+        BooksDatabase.getInstance().pullDataFromJSON();
+        LibraryBookDatabase.getInstance().pullDataFromJSON();
+        CustomerBookDatabase.getInstance().pullDataFromJSON();
+
         System.out.println("Library Id \t Book Id");
-        ManageBooksView manageBooksView = new ManageBooksView();
+
         for(int libraryId: CustomerBookDatabase.getInstance().getLibraryIdToBookId(customerId).keySet()) {
             int bookId = CustomerBookDatabase.getInstance().getLibraryIdToBookId(customerId).get(libraryId);
             Book issuedBook = BooksDatabase.getInstance().getBookById(bookId);
@@ -59,6 +65,7 @@ class CustomerManagerModel {
     }
 
     public Customer viewCustomerDetails(int customerId) {
+        CustomerDatabase.getInstance().pullDataFromJSON();
         Customer customer = CustomerDatabase.getInstance().getCustomerById(customerId);
         return customer;
     }

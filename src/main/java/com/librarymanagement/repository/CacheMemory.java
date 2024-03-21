@@ -14,6 +14,17 @@ public class CacheMemory {
         return cacheMemory;
     }
 
+    public void pushAllDataToJSON() {
+        AdminDatabase.getInstance().pushDataToJSON();
+        AdminToLibraryDatabase.getInstance().pushDataToJSON();
+        BooksDatabase.getInstance().pushDataToJSON();
+        CredentialsDatabase.getInstance().pushDataToJSON();
+        CustomerDatabase.getInstance().pushDataToJSON();
+        CustomerBookDatabase.getInstance().pushDataToJSON();
+        LibraryDatabase.getInstance().pushDataToJSON();
+        LibraryBookDatabase.getInstance().pushDataToJSON();
+    }
+
     public int getCurrentAdmin() {
         return currentAdminId;
     }

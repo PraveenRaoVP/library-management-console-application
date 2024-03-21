@@ -1,7 +1,10 @@
 package com.librarymanagement.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.librarymanagement.models.Book;
 
+import java.io.File;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +15,7 @@ public class LibraryBookDatabase {
     // store books Id to corresponding library id
     private final Map<Integer, Map<Integer, Integer>> libraryIdToBookIdToCount = new HashMap<>();
     private LibraryBookDatabase() {}
-
+    private String fileNamePath = "src/main/resources/libraryBooks.json";
     private static LibraryBookDatabase libraryBookDatabase;
 
     public static LibraryBookDatabase getInstance() {
@@ -104,5 +107,27 @@ public class LibraryBookDatabase {
             }
         }
         return books;
+    }
+
+    public void pushDataToJSON() {
+        // Code to push the data to the file
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(fileNamePath);
+        try{
+            mapper.writeValue(file, libraryIdToBookIdToCount);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pullDataFromJSON() {
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(fileNamePath);
+        try {
+            libraryIdToBookIdToCount.clear();
+            libraryIdToBookIdToCount.putAll(mapper.readValue(file, new TypeReference<Map<Integer, Map<Integer, Integer>>>() {}));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

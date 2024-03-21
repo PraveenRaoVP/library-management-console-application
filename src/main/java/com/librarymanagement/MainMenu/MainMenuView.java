@@ -3,6 +3,7 @@ package com.librarymanagement.MainMenu;
 import com.librarymanagement.AdminManagement.AdminManagerView;
 import com.librarymanagement.CustomerManagement.CustomerManagerView;
 import com.librarymanagement.ManageBooks.ManageBooksView;
+import com.librarymanagement.repository.CacheMemory;
 import com.librarymanagement.repository.LibraryDatabase;
 import com.librarymanagement.setup.LibrarySetupView;
 
@@ -35,6 +36,7 @@ public class MainMenuView {
                     handleAdminOptions();
                     break;
                 case 5:
+                    CacheMemory.getInstance().pushAllDataToJSON();
                     System.out.println("Exiting...");
                     break;
                 default:

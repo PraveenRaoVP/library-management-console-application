@@ -1,17 +1,21 @@
 package com.librarymanagement.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.librarymanagement.models.Credentials;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CredentialsDatabase {
     private static CredentialsDatabase credentialsDatabase;
-    private final List<Credentials> credentialsList;
-
+    private final Map<Integer, Credentials> credentialsList = new HashMap<>();
+    private String fileNamePath = "src/main/resources/credentials.json";
     private CredentialsDatabase() {
-        credentialsList = new ArrayList<>();
-        credentialsList.add(new Credentials("zsgs","123"));
+        credentialsList.put(1, new Credentials("admin","admin"));
     }
 
     public static CredentialsDatabase getInstance() {
@@ -22,19 +26,41 @@ public class CredentialsDatabase {
     }
 
     public List<Credentials> getCredentialsList() {
-        return credentialsList;
+        return new ArrayList<>(credentialsList.values());
     }
 
     public void insertCredentials(Credentials credentials) {
-        credentialsList.add(credentials);
+        int credentialsId = credentialsList.size() + 1;
+        credentialsList.put(credentialsId, credentials);
     }
 
     public boolean validateCredentials(String emailId, String password) {
-        for (Credentials credentials : credentialsList) {
+        for (Credentials credentials : credentialsList.values()) {
             if (credentials.getUserName().equals(emailId) && credentials.getPassword().equals(password)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public void pushDataToJSON() {
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(fileNamePath);
+        try{
+            mapper.writeValue(file, credentialsList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pullDataFromJSON() {
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(fileNamePath);
+        try{
+                credentialsList.clear();
+                credentialsList.putAll(mapper.readValue(file, new TypeReference<Map<Integer, Credentials>>() {}));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

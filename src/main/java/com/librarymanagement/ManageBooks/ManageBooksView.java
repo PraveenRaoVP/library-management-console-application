@@ -1,6 +1,8 @@
 package com.librarymanagement.ManageBooks;
 
 import com.librarymanagement.models.Library;
+import com.librarymanagement.repository.BooksDatabase;
+import com.librarymanagement.repository.LibraryBookDatabase;
 import com.librarymanagement.repository.LibraryDatabase;
 import com.librarymanagement.setup.LibrarySetupView;
 
@@ -45,10 +47,14 @@ public class ManageBooksView {
             int volume = sc.nextInt();
             sc.nextLine();
             manageBooksModel.addBook(libraryId, name, author, publication, edition, journal, availableCount, volume);
+            BooksDatabase.getInstance().pushDataToJSON();
+            LibraryBookDatabase.getInstance().pushDataToJSON();
         }
     }
 
     public void removeBook() {
+        BooksDatabase.getInstance().pullDataFromJSON();
+        LibraryBookDatabase.getInstance().pullDataFromJSON();
         Scanner sc = new Scanner(System.in);
         System.out.println("Do you wish to see the list of libraries? (y/n)");
         String choice = sc.nextLine();
@@ -71,9 +77,14 @@ public class ManageBooksView {
         int bookId = sc.nextInt();
         sc.nextLine();
         manageBooksModel.removeBook(libraryId, bookId);
+        BooksDatabase.getInstance().pushDataToJSON();
+        LibraryBookDatabase.getInstance().pushDataToJSON();
     }
 
     public void updateBookCount() {
+        LibraryDatabase.getInstance().pullDataFromJSON();
+        BooksDatabase.getInstance().pullDataFromJSON();
+        LibraryBookDatabase.getInstance().pullDataFromJSON();
         Scanner sc = new Scanner(System.in);
         System.out.println("Do you wish to see the list of libraries? (y/n)");
         String choice = sc.nextLine();
@@ -90,9 +101,12 @@ public class ManageBooksView {
         System.out.println("Enter the new count: ");
         int count = sc.nextInt();
         manageBooksModel.updateBookCount(libraryId, bookId, count);
+        BooksDatabase.getInstance().pushDataToJSON();
+        LibraryBookDatabase.getInstance().pushDataToJSON();
     }
 
     public void viewBooks() {
+        LibraryDatabase.getInstance().pullDataFromJSON();
         Scanner sc = new Scanner(System.in);
         System.out.println("Do you wish to see the list of libraries? (y/n)");
         String choice = sc.nextLine();

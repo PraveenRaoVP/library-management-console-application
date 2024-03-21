@@ -1,15 +1,21 @@
 package com.librarymanagement.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.librarymanagement.models.Admin;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AdminDatabase {
     private AdminDatabase() {}
 
     public static AdminDatabase adminDatabase;
-    private final List<Admin> adminList = new ArrayList<>();
+    private final Map<Integer, Admin> adminList = new HashMap<>();
+    private String fileNamePath = "src/main/resources/admins.json"; // Path to the file where the admins are stored
 
     public static AdminDatabase getInstance() {
         if(adminDatabase == null) {
@@ -18,41 +24,49 @@ public class AdminDatabase {
         return adminDatabase;
     }
 
+    public void pushDataToJSON() {
+        // Code to push the data to the file
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(fileNamePath);
+        try{
+            mapper.writeValue(file, adminList);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pullDataFromJSON() {
+        // Code to pull the data from the file
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(fileNamePath);
+        try {
+            adminList.clear();
+            adminList.putAll(mapper.readValue(file, new TypeReference<Map<Integer, Admin>>() {}));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void insertAdmin(Admin admin) {
-        adminList.add(admin);
+        adminList.put(admin.getAdminId(), admin);
     }
 
     public List<Admin> getAdminList() {
-        return adminList;
+        return new ArrayList<>(adminList.values());
     }
 
     public Admin getAdmin(int id) {
-        for (Admin admin : adminList) {
-            if (admin.getAdminId() == id) {
-                return admin;
-            }
-        }
-        return null;
+        return adminList.get(id);
     }
 
     public void deleteAdmin(int adminId) {
-        for(Admin admin: adminList) {
-            if(admin.getAdminId() == adminId) {
-                adminList.remove(admin);
-                break;
-            }
-        }
+        adminList.remove(adminId);
     }
 
     public void updateAdmin(int adminId, String name, String email, String address) {
-        for(Admin admin: adminList) {
-            if(admin.getAdminId() == adminId) {
-                admin.setName(name);
-                admin.setEmailId(email);
-                admin.setAddress(address);
-                break;
-            }
-        }
+        Admin admin = adminList.get(adminId);
+        admin.setName(name);
+        admin.setEmailId(email);
+        admin.setAddress(address);
     }
 }

@@ -17,7 +17,7 @@ public class Library {
         this.address = address;
     }
 
-//    public Library(){}
+    public Library(){}
 
     public String getLibraryName() {
         return libraryName;

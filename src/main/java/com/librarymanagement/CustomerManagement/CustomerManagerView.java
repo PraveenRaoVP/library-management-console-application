@@ -16,6 +16,9 @@ public class CustomerManagerView {
 
 
     public void issueBook() {
+        LibraryDatabase.getInstance().pullDataFromJSON();
+        BooksDatabase.getInstance().pullDataFromJSON();
+        LibraryBookDatabase.getInstance().pullDataFromJSON();
         Scanner sc = new Scanner(System.in);
         System.out.println("Do you wish to see the details of the libraries? (y/n)");
         String choice = sc.nextLine();
@@ -51,9 +54,14 @@ public class CustomerManagerView {
         int bookId = sc.nextInt();
         sc.nextLine();
         CustomerManagerModel.issueBook(libraryId, customerName, customerPhoneNo, customerEmailId, customerAddress, bookId);
+        CustomerDatabase.getInstance().pushDataToJSON();
+        CustomerBookDatabase.getInstance().pushDataToJSON();
     }
 
     public void returnBook() {
+        LibraryDatabase.getInstance().pullDataFromJSON();
+        CustomerDatabase.getInstance().pullDataFromJSON();
+        CustomerBookDatabase.getInstance().pullDataFromJSON();
         System.out.println("Enter the customer id: ");
         Scanner sc = new Scanner(System.in);
         int customerId = sc.nextInt();
@@ -70,6 +78,8 @@ public class CustomerManagerView {
         System.out.println("Enter the book id you wish to return: ");
         int bookId = sc.nextInt();
         customerManagerModel.returnBook(customerId, libraryId, bookId);
+        CustomerDatabase.getInstance().pushDataToJSON();
+        CustomerBookDatabase.getInstance().pushDataToJSON();
     }
 
     // TODO: check for fines in phase 2
@@ -77,14 +87,19 @@ public class CustomerManagerView {
 //    }
 
     public void removeCustomer() {
+        CustomerDatabase.getInstance().pullDataFromJSON();
+        CustomerBookDatabase.getInstance().pullDataFromJSON();
         System.out.println("Enter the customer id: ");
         Scanner sc = new Scanner(System.in);
         int customerId = sc.nextInt();
         CustomerDatabase.getInstance().removeCustomer(customerId);
         CustomerBookDatabase.getInstance().removeCustomerBooks(customerId);
+        CustomerDatabase.getInstance().pushDataToJSON();
+        CustomerBookDatabase.getInstance().pushDataToJSON();
     }
 
     public void viewCustomer() {
+        CustomerDatabase.getInstance().pullDataFromJSON();
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the customer id: ");
         int customerId = sc.nextInt();

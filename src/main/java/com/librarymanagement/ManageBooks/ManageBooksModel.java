@@ -31,6 +31,8 @@ public class ManageBooksModel {
     }
 
     public void viewBooks(int libraryId) {
+        BooksDatabase.getInstance().pullDataFromJSON();
+        LibraryBookDatabase.getInstance().pullDataFromJSON();
         // View books in library
         System.out.println("Book Id \t Book Name \t Author \t Publication \t Edition \t Journal \t Available Count \t Volume");
         for(Book book: BooksDatabase.getInstance().getBooks()) {
@@ -40,7 +42,6 @@ public class ManageBooksModel {
                 manageBooksView.showAlert(book.getId() + "\t" + book.getName() + "\t" + book.getAuthor() + "\t" + book.getPublication() + "\t" + book.getEdition() + "\t" + book.getJournal() + "\t" + count + "\t" + book.getVolume());
             }
         }
-
     }
 
     public void viewAllBooks() {

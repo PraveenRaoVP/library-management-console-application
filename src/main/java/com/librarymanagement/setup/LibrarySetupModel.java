@@ -20,6 +20,8 @@ class LibrarySetupModel {
         int libraryId = getLibraries().size()+1;
         Library library = new Library(libraryId, libraryName, phoneNo, emailId, address);
         LibraryDatabase.getInstance().insertLibrary(library);
+        LibraryDatabase.getInstance().pushDataToJSON();
+
     }
 
     public List<Library> getLibraries() {
@@ -39,6 +41,9 @@ class LibrarySetupModel {
     }
 
     public void viewLibraryBooks(int libraryId) {
+        LibraryDatabase.getInstance().pullDataFromJSON();
+        LibraryBookDatabase.getInstance().pullDataFromJSON();
+        BooksDatabase.getInstance().pullDataFromJSON();
         List<Integer> bookIds = LibraryBookDatabase.getInstance().getBookIdsForLibrary(libraryId);
         for(int bookId: bookIds) {
             Book book = BooksDatabase.getInstance().getBookById(bookId);

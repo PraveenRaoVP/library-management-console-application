@@ -13,6 +13,9 @@ public class Admin {
         this.address = address;
     }
 
+    public Admin() {
+    }
+
     public int getAdminId() {
         return adminId;
     }
