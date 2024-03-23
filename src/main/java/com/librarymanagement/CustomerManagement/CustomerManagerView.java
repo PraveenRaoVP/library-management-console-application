@@ -4,6 +4,7 @@ import com.librarymanagement.models.Book;
 import com.librarymanagement.models.Customer;
 import com.librarymanagement.models.Library;
 import com.librarymanagement.repository.*;
+import com.librarymanagement.validation.ValidationModel;
 
 import java.util.Scanner;
 
@@ -20,31 +21,49 @@ public class CustomerManagerView {
         BooksDatabase.getInstance().pullDataFromJSON();
         LibraryBookDatabase.getInstance().pullDataFromJSON();
         Scanner sc = new Scanner(System.in);
-        System.out.println("Do you wish to see the details of the libraries? (y/n)");
-        String choice = sc.nextLine();
-        if(choice.equals("y")) {
-            System.out.println("Library ID \t Library Name \t Phone No \t Email Id \t Address");
-            for(Library lib: LibraryDatabase.getInstance().getLibraries()) {
-                System.out.println(lib.getLibraryId() + "\t" + lib.getLibraryName() + "\t" + lib.getPhoneNo() + "\t" + lib.getEmailId() + "\t" + lib.getAddress());
+        int libraryId;
+        if(CacheMemory.getInstance().getCurrentAdmin()==-1) {
+            System.out.println("Do you wish to see the details of the libraries? (y/n)");
+            String choice = sc.nextLine();
+            if(choice.equals("y")) {
+                System.out.println("Library ID \t Library Name \t Phone No \t Email Id \t Address");
+                for(Library lib: LibraryDatabase.getInstance().getLibraries()) {
+                    System.out.println(lib.getLibraryId() + "\t" + lib.getLibraryName() + "\t" + lib.getPhoneNo() + "\t" + lib.getEmailId() + "\t" + lib.getAddress());
+                }
             }
-        }
 
-        System.out.println("Enter the id of the library: ");
-        int libraryId = sc.nextInt();
-        sc.nextLine();
+            System.out.println("Enter the id of the library: ");
+            libraryId = sc.nextInt();
+            sc.nextLine();
+        } else {
+            libraryId = AdminToLibraryDatabase.getInstance().getLibraryId(CacheMemory.getInstance().getCurrentAdmin());
+        }
         System.out.println("Enter the details of the customer: ");
         System.out.println("Enter the customer name: ");
         String customerName = sc.nextLine();
-        System.out.println("Enter the customer phone number: ");
-        String customerPhoneNo = sc.nextLine();
-        System.out.println("Enter the customer email id: ");
-        String customerEmailId = sc.nextLine();
+        String customerPhoneNo;
+        while(true) {
+            System.out.println("Enter the customer phone number: ");
+            customerPhoneNo = sc.nextLine();
+
+            if(!ValidationModel.getInstance().validatePhoneNo(customerPhoneNo)) {
+                System.out.println("Invalid phone number! Enter the phone number again!");
+            } else break;
+        }
+        String customerEmailId;
+        while(true) {
+            System.out.println("Enter the customer email id: ");
+            customerEmailId = sc.nextLine();
+            if(!ValidationModel.getInstance().validateEmail(customerEmailId)) {
+                System.out.println("Invalid email id! Enter the email id again!");
+            } else break;
+        }
         System.out.println("Enter the customer address: ");
         String customerAddress = sc.nextLine();
 
         System.out.println("Do you wish to see the list of books in the library? (y/n)");
-        choice = sc.nextLine();
-        if(choice.equals("y")) {
+        String choice = sc.nextLine();
+        if(choice.equalsIgnoreCase("y")) {
             System.out.println("Book ID \t Book Name \t Author \t Publication \t Edition \t Journal \t Available Count \t Volume");
             for(Book book: LibraryBookDatabase.getInstance().getBooksForLibrary(libraryId)) {
                 System.out.println(book.getId() + "\t" + book.getName() + "\t" + book.getAuthor() + "\t" + book.getPublication() + "\t" + book.getEdition() + "\t" + book.getJournal() + "\t" + book.getAvailableCount() + "\t" + book.getVolume());
@@ -66,6 +85,10 @@ public class CustomerManagerView {
         Scanner sc = new Scanner(System.in);
         int customerId = sc.nextInt();
         int libraryId = CustomerBookDatabase.getInstance().returnLibraryId(customerId);
+        if(libraryId == -1) {
+            System.out.println("The customer has not borrowed any books!");
+            return;
+        }
         if(LibraryBookDatabase.getInstance().getBooksForCustomer(customerId).isEmpty()) {
             System.out.println("The customer has not borrowed any books!");
             return;

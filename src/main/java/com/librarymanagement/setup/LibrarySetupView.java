@@ -5,6 +5,7 @@ import com.librarymanagement.repository.AdminToLibraryDatabase;
 import com.librarymanagement.repository.BooksDatabase;
 import com.librarymanagement.repository.LibraryBookDatabase;
 import com.librarymanagement.repository.LibraryDatabase;
+import com.librarymanagement.validation.ValidationModel;
 
 import java.util.List;
 import java.util.Scanner;
@@ -19,10 +20,26 @@ public class LibrarySetupView {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter Library Name: ");
         String libraryName = sc.nextLine();
-        System.out.print("Enter Phone Number: ");
-        String phoneNo = sc.nextLine();
-        System.out.print("Enter Email Id: ");
-        String emailId = sc.nextLine();
+        String phoneNo;
+        while(true) {
+            System.out.print("Enter Phone Number: ");
+            phoneNo = sc.nextLine();
+            if(!ValidationModel.getInstance().validatePhoneNo(phoneNo)) {
+                System.out.println("Invalid phone number! Enter the phone number again!");
+            } else {
+                break;
+            }
+        }
+        String emailId;
+        while(true) {
+            System.out.print("Enter Email Id: ");
+            emailId = sc.nextLine();
+            if(!ValidationModel.getInstance().validateEmail(emailId)) {
+                System.out.println("Invalid email id! Enter the email id again!");
+            } else {
+                break;
+            }
+        }
         System.out.print("Enter Address: ");
         String address = sc.nextLine();
         librarySetupModel.addLibrary(libraryName, phoneNo, emailId, address);

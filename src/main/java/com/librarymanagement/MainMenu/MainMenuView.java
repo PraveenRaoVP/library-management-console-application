@@ -17,6 +17,7 @@ public class MainMenuView {
     }
 
     public void init() {
+        LibraryDatabase.getInstance().pullDataFromJSON();
         Scanner sc = new Scanner(System.in);
         int ch = Integer.MIN_VALUE;
         do{
@@ -66,7 +67,7 @@ public class MainMenuView {
         System.out.println("3. View Libraries"); // done
         System.out.println("4. Update Library"); // done
         System.out.println("5. View all books of the library (Admin only)"); //done
-        System.out.println("6. Logout"); //done
+        System.out.println("6. Back"); //done
         System.out.println("Select an option: ");
     }
 
@@ -217,6 +218,9 @@ public class MainMenuView {
                 adminManagerView.updateAdminView();
                 break;
             case 5:
+                adminManagerView.changePassword();
+                break;
+            case 6:
                 System.out.println("Going back...");
                 break;
             default:

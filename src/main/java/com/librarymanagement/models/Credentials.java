@@ -5,7 +5,8 @@ public class Credentials {
     private String userName;
     private String password;
 
-    public Credentials(String userName, String password) {
+    public Credentials(int credId, String userName, String password) {
+        this.credId = credId;
         this.userName = userName;
         this.password = password;
     }

@@ -1,9 +1,7 @@
 package com.librarymanagement.ManageBooks;
 
 import com.librarymanagement.models.Library;
-import com.librarymanagement.repository.BooksDatabase;
-import com.librarymanagement.repository.LibraryBookDatabase;
-import com.librarymanagement.repository.LibraryDatabase;
+import com.librarymanagement.repository.*;
 import com.librarymanagement.setup.LibrarySetupView;
 
 import java.util.Scanner;
@@ -17,16 +15,22 @@ public class ManageBooksView {
 
     public void addBook() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Do you wish to see the list of libraries? (y/n)");
-        String choice = sc.nextLine();
-        if(choice.equals("y")) {
-            System.out.println("Library ID \t Library Name \t Phone No \t Email Id \t Address");
-            for(Library lib: LibraryDatabase.getInstance().getLibraries()) {
-                System.out.println(lib.getLibraryId() + "\t" + lib.getLibraryName() + "\t" + lib.getPhoneNo() + "\t" + lib.getEmailId() + "\t" + lib.getAddress());
+        int libraryId;
+        if(CacheMemory.getInstance().getCurrentAdmin() == -1) {
+            System.out.println("Do you wish to see the list of libraries? (y/n)");
+            String choice = sc.nextLine();
+            if(choice.equals("y")) {
+                System.out.println("Library ID \t Library Name \t Phone No \t Email Id \t Address");
+                for(Library lib: LibraryDatabase.getInstance().getLibraries()) {
+                    System.out.println(lib.getLibraryId() + "\t" + lib.getLibraryName() + "\t" + lib.getPhoneNo() + "\t" + lib.getEmailId() + "\t" + lib.getAddress());
+                }
             }
+            System.out.println("Enter the id of the library: ");
+            libraryId = sc.nextInt();
+        } else {
+            libraryId = AdminToLibraryDatabase.getInstance().getLibraryId(CacheMemory.getInstance().getCurrentAdmin());
         }
-        System.out.println("Enter the id of the library: ");
-        int libraryId = sc.nextInt();
+
         System.out.println("Enter the number of books you wish to add: ");
         int n = sc.nextInt();
         sc.nextLine();

@@ -71,12 +71,12 @@ public class CustomerBookDatabase {
     }
 
     // if the return date is more than 7 days from the issue date, the fine is 2rs per day
-    public double calculateFine(String returnDate) {
+    public double calculateFine(String returnDate, String issueDate) {
         String[] returnDateArr = returnDate.split("-");
         int returnDay = Integer.parseInt(returnDateArr[0]);
         int returnMonth = Integer.parseInt(returnDateArr[1]);
         int returnYear = Integer.parseInt(returnDateArr[2]);
-        String[] issueDateArr = returnDate.split("-");
+        String[] issueDateArr = issueDate.split("-");
         int issueDay = Integer.parseInt(issueDateArr[0]);
         int issueMonth = Integer.parseInt(issueDateArr[1]);
         int issueYear = Integer.parseInt(issueDateArr[2]);
@@ -90,7 +90,14 @@ public class CustomerBookDatabase {
     }
 
     public int returnLibraryId(int customerId) {
-        return customerIdToLibraryIdtoBookId.get(customerId).keySet().iterator().next();
+        if(customerIdToLibraryIdtoBookId.containsKey(customerId)) {
+            try {
+                return customerIdToLibraryIdtoBookId.get(customerId).keySet().iterator().next();
+            } catch (Exception e) {
+                return -1;
+            }
+        }
+        return -1;
     }
 
     public void removeCustomerBooks(int customerId) {

@@ -15,7 +15,7 @@ public class CredentialsDatabase {
     private final Map<Integer, Credentials> credentialsList = new HashMap<>();
     private String fileNamePath = "src/main/resources/credentials.json";
     private CredentialsDatabase() {
-        credentialsList.put(1, new Credentials("admin","admin"));
+
     }
 
     public static CredentialsDatabase getInstance() {
@@ -62,5 +62,25 @@ public class CredentialsDatabase {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean checkPassword(int adminId, String oldPassword) {
+        AdminToCredentialsDatabase.getInstance().pullDataFromJSON();
+        int credId = AdminToCredentialsDatabase.getInstance().getCredIdForAdmin(adminId);
+        return credentialsList.get(credId).getPassword().equals(oldPassword);
+    }
+
+    public void updatePassword(int adminId, String newPassword) {
+        credentialsList.get(adminId).setPassword(newPassword);
+        pushDataToJSON();
+    }
+
+    public int getCredentialsId(String username) {
+        for (Credentials credentials : credentialsList.values()) {
+            if (credentials.getUserName().equals(username)) {
+                return credentials.getCredId();
+            }
+        }
+        return -1;
     }
 }

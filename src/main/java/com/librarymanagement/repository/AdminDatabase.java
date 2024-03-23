@@ -69,4 +69,13 @@ public class AdminDatabase {
         admin.setEmailId(email);
         admin.setAddress(address);
     }
+
+    public int getAdminId(String username) {
+        for(Admin admin: adminList.values()) {
+            if(admin.getEmailId().equals(username)) {
+                return admin.getAdminId();
+            }
+        }
+        return -1;
+    }
 }

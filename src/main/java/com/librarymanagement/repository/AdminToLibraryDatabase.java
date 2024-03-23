@@ -70,4 +70,12 @@ public class AdminToLibraryDatabase {
         }
     }
 
+    public int getLibraryId(int currentAdmin) {
+        for (Map.Entry<Integer, Integer> entry : libraryIdToAdminId.entrySet()) {
+            if (entry.getValue() == currentAdmin) {
+                return entry.getKey();
+            }
+        }
+        return -1;
+    }
 }
