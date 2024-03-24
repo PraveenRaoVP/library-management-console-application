@@ -38,6 +38,13 @@ public class CustomerBookDatabase {
             libraryIdToBookId.put(libraryId, bookId);
             customerIdToLibraryIdtoBookId.put(customerId, libraryIdToBookId);
         }
+        if(customerIdToIssueDateToFine.containsKey(customerId)) {
+            customerIdToIssueDateToFine.get(customerId).put(CacheMemory.getInstance().getCurrentTimeAsString(), 0.0);
+        } else {
+            Map<String, Double> issueDateToFine = new HashMap<>();
+            issueDateToFine.put(CacheMemory.getInstance().getCurrentTimeAsString(), 0.0);
+            customerIdToIssueDateToFine.put(customerId, issueDateToFine);
+        }
     }
 
     public void removeCustomerBook(int customerId, int libraryId, int bookId) {

@@ -1,12 +1,8 @@
 package com.librarymanagement.CustomerManagement;
 
-import com.librarymanagement.ManageBooks.ManageBooksView;
 import com.librarymanagement.models.Book;
 import com.librarymanagement.models.Customer;
-import com.librarymanagement.repository.BooksDatabase;
-import com.librarymanagement.repository.CustomerBookDatabase;
-import com.librarymanagement.repository.CustomerDatabase;
-import com.librarymanagement.repository.LibraryBookDatabase;
+import com.librarymanagement.repository.*;
 
 class CustomerManagerModel {
     private final CustomerManagerView customerManagerView;
@@ -39,13 +35,28 @@ class CustomerManagerModel {
         CustomerBookDatabase.getInstance().removeCustomerBook(customerId, libraryId, bookId);
         BooksDatabase.getInstance().getBookById(bookId).setAvailableCount(BooksDatabase.getInstance().getBookById(bookId).getAvailableCount() + 1);
         LibraryBookDatabase.getInstance().updateBookCount(libraryId, bookId, LibraryBookDatabase.getInstance().getBookCount(libraryId, bookId) + 1);
+        String issueDate = CustomerBookDatabase.getInstance().getCustomerIdToIssueDateToFine().get(customerId).keySet().stream().findFirst().get();
+        String returnDate = CacheMemory.getInstance().getCurrentTimeAsString();
+        double fine = calculateFine(customerId, issueDate, returnDate);
+        if(fine > 0) {
+            CustomerBookDatabase.getInstance().addCustomerFine(customerId, returnDate, fine);
+            customerManagerView.showAlert("You have a pending fine of " + fine + " for the book you have issued. Please pay the fine to return the book.");
+            return;
+        }
         customerManagerView.showAlert("Book returned successfully!");
     }
 
-    public double calculateFine(int customerId) {
+    public double calculateFine(int customerId, String issueDate, String returnDate) {
+        // for each day after 7 days, fine is 10
         double fine = 0;
-        for(String issueDate: CustomerBookDatabase.getInstance().getCustomerIdToIssueDateToFine().get(customerId).keySet()) {
-            fine += CustomerBookDatabase.getInstance().getCustomerIdToIssueDateToFine().get(customerId).get(issueDate);
+        int days = 0;
+        for(int i = 0; i < issueDate.length(); i++) {
+            if(issueDate.charAt(i) != returnDate.charAt(i)) {
+                days++;
+            }
+        }
+        if(days > 7) {
+            fine = (days - 7) * 10;
         }
         return fine;
     }

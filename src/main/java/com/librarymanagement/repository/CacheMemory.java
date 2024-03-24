@@ -32,4 +32,8 @@ public class CacheMemory {
     public void setCurrentAdmin(int currentAdminId) {
         this.currentAdminId = currentAdminId;
     }
+
+    public String getCurrentTimeAsString() {
+        return java.time.LocalDateTime.now().toString();
+    }
 }
