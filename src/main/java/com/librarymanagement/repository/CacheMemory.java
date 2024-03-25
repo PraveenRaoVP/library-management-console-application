@@ -36,4 +36,10 @@ public class CacheMemory {
     public String getCurrentTimeAsString() {
         return java.time.LocalDateTime.now().toString();
     }
+
+    public int getDaysBetweenDates(String issueDate, String returnDate) {
+        java.time.LocalDateTime issue = java.time.LocalDateTime.parse(issueDate);
+        java.time.LocalDateTime ret = java.time.LocalDateTime.parse(returnDate);
+        return (int) java.time.temporal.ChronoUnit.DAYS.between(issue, ret);
+    }
 }

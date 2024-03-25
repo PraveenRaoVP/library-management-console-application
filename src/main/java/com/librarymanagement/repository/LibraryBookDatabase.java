@@ -100,11 +100,9 @@ public class LibraryBookDatabase {
 
     public List<Book> getBooksForCustomer(int customerId) {
         List<Book> books = new ArrayList<>();
-        if(CustomerBookDatabase.getInstance().getLibraryIdToBookId(customerId) != null) {
-            Map<Integer, Integer> libraryIdToBookId = CustomerBookDatabase.getInstance().getLibraryIdToBookId(customerId);
-            for(Map.Entry<Integer, Integer> entry: libraryIdToBookId.entrySet()) {
-                books.add(BooksDatabase.getInstance().getBookById(entry.getValue()));
-            }
+        Map<Integer, Integer> libraryToBookId = CustomerBookDatabase.getInstance().getLibraryIdToBookId(customerId);
+        for(Map.Entry<Integer, Integer> entry: libraryToBookId.entrySet()) {
+            books.add(BooksDatabase.getInstance().getBookById(entry.getValue()));
         }
         return books;
     }

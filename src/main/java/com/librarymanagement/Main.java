@@ -7,7 +7,7 @@ public class Main {
 
     private String appName = "Library Management System";
 
-    private String appVersion = "0.0.1";
+    private String appVersion = "0.1.0";
 
     //default constructor should be private so that we cannot create an instance from other class.
     private Main() {

@@ -48,17 +48,11 @@ class CustomerManagerModel {
 
     public double calculateFine(int customerId, String issueDate, String returnDate) {
         // for each day after 7 days, fine is 10
-        double fine = 0;
-        int days = 0;
-        for(int i = 0; i < issueDate.length(); i++) {
-            if(issueDate.charAt(i) != returnDate.charAt(i)) {
-                days++;
-            }
+        int days = CacheMemory.getInstance().getDaysBetweenDates(issueDate, returnDate);
+        if(days <= 7) {
+            return 0;
         }
-        if(days > 7) {
-            fine = (days - 7) * 10;
-        }
-        return fine;
+        return (days - 7) * 10;
     }
 
     public void viewIssuedBooks(int customerId) {
